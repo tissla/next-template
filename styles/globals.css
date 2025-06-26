@@ -1,0 +1,47 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-*: initial;
+  --color-background: var(--theme-background);
+  --color-foreground: var(--theme-foreground);
+  --color-primary: var(--theme-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-accent: var(--theme-accent);
+  --color-muted: var(--theme-muted);
+}
+
+:root {
+  --theme-background: #ffffff; /* white */
+  --theme-foreground: #000000; /* black */
+  --theme-primary: #80bfff; /* light blue */
+  --theme-secondary: #e0b3ff; /* lavender */
+  --theme-accent: #66ffcc; /* mint */
+  --theme-muted: #e6e6e6; /* light gray */
+}
+
+/* Light theme */
+.theme-light {
+  --theme-background: #fff7fc; /* pastel pink background */
+  --theme-foreground: #2b2b2b; /* dark text */
+  --theme-primary: #ffd1fc; /* pastel pink */
+  --theme-secondary: #d1eaff; /* pastel blue */
+  --theme-accent: #d1ffd6; /* pastel green */
+  --theme-muted: #f3f3f3; /* light gray */
+}
+
+/* Dark theme */
+.theme-dark {
+  --theme-background: #1a1a1a; /* dark background */
+  --theme-foreground: #f3f3f3; /* light text */
+  --theme-primary: #8a2be2; /* violet */
+  --theme-secondary: #6a5acd; /* slate blue */
+  --theme-accent: #00ffcc; /* turquoise */
+  --theme-muted: #333333; /* dark gray */
+}
+
+@layer base {
+  body {
+    font-family: sans-serif;
+    @apply bg-background text-foreground;
+  }
+}
