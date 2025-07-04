@@ -1,6 +1,6 @@
 'use client';
 
-import { useThemeToggler } from '@/hooks/use-theme-toggler';
+import { useThemeToggler } from '@/context/ThemeContext';
 
 export default function ThemeToggle() {
   const { theme, switchTheme } = useThemeToggler();
@@ -8,9 +8,9 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={switchTheme}
-      className="fixed top-4 right-4 px-4 py-2 bg-accent text-foreground rounded shadow"
+      className="w-full px-4 py-3 text-left hover:bg-primary hover:text-background transition-colors"
     >
-      Switch to {theme === 'light' ? 'dark' : 'light'} mode
+      {theme === 'dark' ? 'Light' : 'Dark'} mode
     </button>
   );
 }
