@@ -5,6 +5,16 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Template',
+    default: 'Template',
+  },
+  description: 'Next.js template',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,13 +26,11 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <AuthProvider>
-              <NotificationProvider>
-                {children}
-              </NotificationProvider>
+              <NotificationProvider>{children}</NotificationProvider>
             </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>
-        </body>
+      </body>
     </html>
   );
 }
