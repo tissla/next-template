@@ -20,7 +20,7 @@ export default function Select({
   options,
   value,
   onChange,
-  placeholder = 'Select...',
+  placeholder = 'Select..',
   className = '',
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);

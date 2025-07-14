@@ -1,14 +1,23 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { t as baseT, LangKey, getAvailableLanguages } from '@/lib/i18n';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { 
+  t as baseT, 
+  LangKey, 
+  Locale,
+  getAvailableLanguages, 
+  getBrowserLanguage,
+  isValidLocale,
+  DEFAULT_LOCALE,
+  STORAGE_KEY
+} from '@/lib/i18n';
 
-type LanguageContextType = {
-  lang: string;
-  setLang: (lang: string) => void;
-  t: (key: LangKey, replacements?: Record<string, string>) => string;
-  availableLanguages: string[];
-};
+interface LanguageContextType {
+  lang: Locale;
+  setLang: (lang: Locale) => void;
+  t: (key: LangKey, replacements?: Record<string, string | number>) => string;
+  availableLanguages: Locale[];
+}
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined
@@ -16,29 +25,52 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 
 export const LanguageProvider = ({
   children,
+  defaultLang,
 }: {
   children: React.ReactNode;
+  defaultLang?: Locale;
 }) => {
-  const [lang, setLangState] = useState('sv-SE');
+  // Initialize with browser language or default
+  const [lang, setLangState] = useState<Locale>(() => {
+    if (typeof window === 'undefined') {
+      return defaultLang || DEFAULT_LOCALE;
+    }
+    
+    // Check localStorage first
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && isValidLocale(saved)) {
+      return saved;
+    }
+    
+    // Then check browser language
+    return defaultLang || getBrowserLanguage();
+  });
 
-  useEffect(() => {
-    const saved = localStorage.getItem('preferred-lang');
-    if (saved) {
-      setLangState(saved);
+
+
+  const setLang = useCallback((newLang: Locale) => {
+    setLangState(newLang);
+    localStorage.setItem(STORAGE_KEY, newLang);
+    
+    // Optional: Update document lang attribute
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = newLang.toLowerCase();
     }
   }, []);
 
-  const setLang = (newLang: string) => {
-    setLangState(newLang);
-    localStorage.setItem('preferred-lang', newLang);
-  };
-
-  const t = (key: LangKey, replacements?: Record<string, string>) =>
-    baseT(key, lang, replacements);
+  const t = useCallback((
+    key: LangKey, 
+    replacements?: Record<string, string | number>
+  ) => baseT(key, lang, replacements), [lang]);
 
   return (
     <LanguageContext.Provider
-      value={{ lang, setLang, t, availableLanguages: getAvailableLanguages() }}
+      value={{ 
+        lang, 
+        setLang, 
+        t, 
+        availableLanguages: getAvailableLanguages() 
+      }}
     >
       {children}
     </LanguageContext.Provider>
@@ -46,9 +78,24 @@ export const LanguageProvider = ({
 };
 
 export const useLanguage = () => {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) {
-    throw new Error('useLanguage must be used inside a LanguageProvider');
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within LanguageProvider');
   }
-  return ctx;
+  return context;
+};
+
+// === Optional: Language detector component ===
+export const LanguageDetector = ({ children }: { children: React.ReactNode }) => {
+  const { setLang } = useLanguage();
+  
+  useEffect(() => {
+    // Only run if no saved preference
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      const browserLang = getBrowserLanguage();
+      setLang(browserLang);
+    }
+  }, [setLang]);
+  
+  return <>{children}</>;
 };

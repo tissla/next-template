@@ -1,52 +1,48 @@
-const API_BASE = '';
+// lib/auth.ts
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
+// check
 export async function checkAuthStatus() {
-  const res = await fetch(`${API_BASE}/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'status' }),
+  const res = await fetch(`${API_BASE}/auth/status`, {
     credentials: 'include',
   });
   return res.json();
 }
 
+// obs: example! through code generation
 export async function requestCode(phone: string) {
-  const res = await fetch(`${API_BASE}/verify`, {
+  const res = await fetch(`${API_BASE}/auth/code`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'request-code', phone }),
-    credentials: 'include',
+    body: JSON.stringify({ phone }),
   });
-  if (!res.ok) {
-    const data = await res.json();
-    throw new Error(data.message || 'Failed to request code');
-  }
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function verifyCode(phone: string, code: string) {
-  const res = await fetch(`${API_BASE}/verify`, {
+  const res = await fetch(`${API_BASE}/auth/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'verify-code', phone, code }),
+    body: JSON.stringify({ phone, code }),
     credentials: 'include',
   });
-  if (!res.ok) {
-    const data = await res.json();
-    throw new Error(data.message || 'Verification failed');
-  }
-  return res.json();
+  return handleResponse(res);
 }
 
-export async function login(phone: string, code: string) {
-  await verifyCode(phone, code);
-}
-
+// logout
 export async function logout() {
-  await fetch(`${API_BASE}/verify`, {
+  const res = await fetch(`${API_BASE}/auth/logout`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'logout' }),
     credentials: 'include',
   });
+  return handleResponse(res);
+}
+
+// error handling
+async function handleResponse(res: Response) {
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || `Error: ${res.status}`);
+  }
+  return data;
 }
