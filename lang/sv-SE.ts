@@ -1,5 +1,5 @@
 const sv = {
-  Rubrik: '🎨 Temavy - Typsnitt & färg',
+  Title: '🎨 Temavy - Typsnitt & färg',
 
   FontTest: 'Ärlighet och öppenhet är vitala attribut för ålänningar.',
 

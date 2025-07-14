@@ -2,15 +2,15 @@ import sv from '../lang/sv-SE';
 import en from '../lang/en-US';
 
 // Constants
-export const DEFAULT_LOCALE = 'sv-SE';
+export const DEFAULT_LOCALE = 'en-US';
 export const STORAGE_KEY = 'preferred-lang';
 
 // Types
-export type LangDict = typeof sv;
-export type LangKey = keyof LangDict;
-export type Locale = keyof typeof languages;
+export type LangDict = typeof en; // the full translation object
+export type LangKey = keyof LangDict; // key, part of the full translation object
+export type Locale = keyof typeof languages; // mapping from supported langcode to translation object
 
-// Language registry
+// Language registry map
 const languages = {
   'sv-SE': sv,
   'en-US': en,
@@ -29,12 +29,13 @@ export const getTranslations = (lang: string): LangDict =>
 // Translation function
 export const t = (
   key: LangKey,
-  lang: string,
-  replacements?: Record<string, string | number>
+  lang: string, //usually provided by LanguageProvider
+  replacements?: Record<string, string | number> //cross-language params, such as names or values
 ): string => {
   const dict = getTranslations(lang);
-  let text = (dict[key] ?? key) as string;
+  let text = (dict[key] ?? key) as string; //shows key as string if translation isnt found
 
+  //cross-language replacements, if used
   if (replacements) {
     Object.entries(replacements).forEach(([placeholder, value]) => {
       text = text.replace(new RegExp(`{${placeholder}}`, 'g'), String(value));
@@ -44,20 +45,15 @@ export const t = (
   return text;
 };
 
-// Browser language detection
+// browser language detection
 export const getBrowserLanguage = (): Locale => {
   if (typeof window === 'undefined') return DEFAULT_LOCALE;
 
   const browserLang = navigator.language;
 
-  // Exact match
+  // use browser lang
   if (isValidLocale(browserLang)) return browserLang;
 
-  // Partial match (e.g., 'en' matches 'en-US')
-  const shortLang = browserLang.split('-')[0];
-  const match = getAvailableLanguages().find((locale) =>
-    locale.startsWith(shortLang)
-  );
-
-  return match || DEFAULT_LOCALE;
+  // or default
+  return DEFAULT_LOCALE;
 };

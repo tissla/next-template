@@ -1,15 +1,21 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { 
-  t as baseT, 
-  LangKey, 
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
+import {
+  t as baseT,
+  LangKey,
   Locale,
-  getAvailableLanguages, 
+  getAvailableLanguages,
   getBrowserLanguage,
   isValidLocale,
   DEFAULT_LOCALE,
-  STORAGE_KEY
+  STORAGE_KEY,
 } from '@/lib/i18n';
 
 interface LanguageContextType {
@@ -30,46 +36,40 @@ export const LanguageProvider = ({
   children: React.ReactNode;
   defaultLang?: Locale;
 }) => {
-  // Initialize with browser language or default
-  const [lang, setLangState] = useState<Locale>(() => {
-    if (typeof window === 'undefined') {
-      return defaultLang || DEFAULT_LOCALE;
-    }
-    
-    // Check localStorage first
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && isValidLocale(saved)) {
-      return saved;
-    }
-    
-    // Then check browser language
-    return defaultLang || getBrowserLanguage();
-  });
-
-
+  const [lang, setLangState] = useState<Locale>(DEFAULT_LOCALE);
 
   const setLang = useCallback((newLang: Locale) => {
     setLangState(newLang);
     localStorage.setItem(STORAGE_KEY, newLang);
-    
-    // Optional: Update document lang attribute
+
     if (typeof document !== 'undefined') {
       document.documentElement.lang = newLang.toLowerCase();
     }
   }, []);
 
-  const t = useCallback((
-    key: LangKey, 
-    replacements?: Record<string, string | number>
-  ) => baseT(key, lang, replacements), [lang]);
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && isValidLocale(saved)) {
+      setLang(saved);
+    } else {
+      setLang(defaultLang || getBrowserLanguage());
+    }
+  }, [defaultLang, setLang]);
+
+  const t = useCallback(
+    (key: LangKey, replacements?: Record<string, string | number>) => {
+      return baseT(key, lang, replacements);
+    },
+    [lang]
+  );
 
   return (
     <LanguageContext.Provider
-      value={{ 
-        lang, 
-        setLang, 
-        t, 
-        availableLanguages: getAvailableLanguages() 
+      value={{
+        lang,
+        setLang,
+        t,
+        availableLanguages: getAvailableLanguages(),
       }}
     >
       {children}
@@ -83,19 +83,4 @@ export const useLanguage = () => {
     throw new Error('useLanguage must be used within LanguageProvider');
   }
   return context;
-};
-
-// === Optional: Language detector component ===
-export const LanguageDetector = ({ children }: { children: React.ReactNode }) => {
-  const { setLang } = useLanguage();
-  
-  useEffect(() => {
-    // Only run if no saved preference
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      const browserLang = getBrowserLanguage();
-      setLang(browserLang);
-    }
-  }, [setLang]);
-  
-  return <>{children}</>;
 };

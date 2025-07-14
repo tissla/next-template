@@ -1,10 +1,13 @@
 // context/AuthContext.tsx
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
-
-
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 
 // generic user type
 interface User {
@@ -20,23 +23,25 @@ interface AuthResult {
   user?: User;
 }
 
+// === interfaces ===
+
 //create type for credentials depending on auth-method
 interface AuthCredentials {
   [key: string]: string | number | boolean | undefined;
 }
 
+// authContext
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
-  login: (credentials: AuthCredentials) => Promise<void>; 
+  login: (credentials: AuthCredentials) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   setAuthConfig: (config: AuthConfig) => void;
 }
 
-
-
+// pluggable config
 interface AuthConfig {
   endpoints?: {
     login?: string;
@@ -44,20 +49,21 @@ interface AuthConfig {
     status?: string;
   };
   // overridable callbacks
-  onLogin?: (credentials: AuthCredentials) => Promise<AuthResult>; 
-  onLogout?: () => Promise<void>; 
+  onLogin?: (credentials: AuthCredentials) => Promise<AuthResult>;
+  onLogout?: () => Promise<void>;
   onCheckAuth?: () => Promise<{ authenticated: boolean; user?: User }>;
 }
 
+// authProvider
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // default cookie auth setup
 const defaultAuthConfig: AuthConfig = {
   endpoints: {
     login: '/api/auth/login',
-    logout: '/api/auth/logout',  
-    status: '/api/auth/status'
-  }
+    logout: '/api/auth/logout',
+    status: '/api/auth/status',
+  },
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -66,11 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [authConfig, setAuthConfig] = useState<AuthConfig>(defaultAuthConfig);
 
-  // Default checkAuth 
+  // Default checkAuth
   const checkAuth = useCallback(async () => {
     try {
       setIsLoading(true);
-      
+
       // checkAuth
       if (authConfig.onCheckAuth) {
         const result = await authConfig.onCheckAuth();
@@ -81,8 +87,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(false);
         setUser(null);
       }
-
-
     } catch (error) {
       console.error('Auth check failed:', error);
       setIsAuthenticated(false);
@@ -107,7 +111,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         return;
       }
-
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
@@ -123,11 +126,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Logout
       if (authConfig.onLogout) {
         await authConfig.onLogout();
-      } 
+      }
 
       setIsAuthenticated(false);
       setUser(null);
-
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {

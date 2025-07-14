@@ -1,5 +1,5 @@
 const en = {
-  Rubrik: '🎨 Theme View - Font & color',
+  Title: '🎨 Theme View - Font & color',
 
   FontTest: 'The quick brown fox jumps over the lazy dog.',
 

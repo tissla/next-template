@@ -84,7 +84,7 @@ export default function Select({
                 type="button"
                 onClick={() => handleSelect(option.value)}
                 className={`w-full px-3 py-2 text-sm text-left flex items-center gap-2 hover:bg-primary hover:text-background transition-colors ${
-                  value === option.value ? 'bg-primary/20' : ''
+                  value === option.value ? 'bg-primary/40' : ''
                 }`}
               >
                 {option.icon && <span>{option.icon}</span>}

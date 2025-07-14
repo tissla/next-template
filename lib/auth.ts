@@ -1,5 +1,7 @@
 // lib/auth.ts
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+
+// endpoint base, if multiple consider reverse proxy on serverside
+const API_BASE = process.env.API_BASE_URL || '';
 
 // check
 export async function checkAuthStatus() {
@@ -7,26 +9,6 @@ export async function checkAuthStatus() {
     credentials: 'include',
   });
   return res.json();
-}
-
-// obs: example! through code generation
-export async function requestCode(phone: string) {
-  const res = await fetch(`${API_BASE}/auth/code`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone }),
-  });
-  return handleResponse(res);
-}
-
-export async function verifyCode(phone: string, code: string) {
-  const res = await fetch(`${API_BASE}/auth/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone, code }),
-    credentials: 'include',
-  });
-  return handleResponse(res);
 }
 
 // logout

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useRef } from 'react';
 
 interface NotificationContextType {
   showNotification: (message: string, duration?: number) => void;
@@ -20,10 +20,19 @@ export function NotificationProvider({
     visible: boolean;
   }>({ message: '', visible: false });
 
-  const showNotification = (message: string, duration = 5000) => {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showNotification = (message: string, duration = 2000) => {
+    // clean previous timers
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     setNotification({ message, visible: true });
-    setTimeout(() => {
+
+    timeoutRef.current = setTimeout(() => {
       setNotification((prev) => ({ ...prev, visible: false }));
+      timeoutRef.current = null;
     }, duration);
   };
 

@@ -1,26 +1,33 @@
-'use client'
+'use client';
 
 import ThemeToggle from '@/components/ThemeButton';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
+import HamburgerMenu from '@/components/HamburgerMenu';
 
 export default function Home() {
   const { t } = useLanguage();
 
   return (
-    <main className="space-y-8 p-8">
-      <h1 className="text-4xl font-bold text-primary">{t('Rubrik')}</h1>
+    <main className="text-sm md:text-base lg:text-lg space-y-8 p-8">
+      <h1 className="text-4xl font-bold text-primary">{t('Title')}</h1>
 
+      <HamburgerMenu />
 
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-      <LanguageSwitcher />
-      <ThemeToggle />
+      {/* no hamb menu on desktop */}
+      <div className="absolute top-4 right-4 hidden sm:flex items-center gap-2">
+        <LanguageSwitcher />
+        <ThemeToggle />
       </div>
 
       <div className="ml-3 p-3 text-lg">
         <p>{t('FontTest')}</p>
-        <p><i>{t('FontTest')}</i></p>
-        <p><strong>{t('FontTest')}</strong></p>
+        <p>
+          <i>{t('FontTest')}</i>
+        </p>
+        <p>
+          <strong>{t('FontTest')}</strong>
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

@@ -2,6 +2,7 @@
 
 import { useLanguage } from '@/context/LanguageContext';
 import Select from '@/components/Select';
+import { Locale } from '@/lib/i18n';
 
 export default function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
@@ -15,7 +16,7 @@ export default function LanguageSwitcher() {
     <Select
       options={languageOptions}
       value={lang}
-      onChange={setLang}
+      onChange={(value) => setLang(value as Locale)}
       className="w-full"
     />
   );

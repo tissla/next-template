@@ -34,38 +34,40 @@
 
 /* Light theme */
 .theme-light {
-  --theme-background: #ffffff;
-  --theme-foreground: #1e1b29;
-  --theme-primary: #c9a3ff;
-  --theme-secondary: #b3eaff;
-  --theme-accent: gold;
-  --theme-muted: #f3f3f3;
-  --theme-border: #e5e7eb;
-  --theme-success: #22c55e;
-  --theme-warning: #fbbf24;
-  --theme-error: #f87171;
+  --theme-background: #f9fafb;
+  --theme-foreground: #1f2937;
+  --theme-primary: #6366f1;
+  --theme-secondary: #e0f2fe;
+  --theme-accent: #f59e0b;
+  --theme-muted: #f3f4f6;
+  --theme-border: #d1d5db;
 
-  --theme-font-sans: 'Segoe UI', sans-serif;
-  --theme-font-serif: sans-serif;
-  --theme-font-mono: 'Liberation Mono', monospace;
+  --theme-success: #10b981;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+
+  --theme-font-sans: 'Inter', 'Segoe UI', sans-serif;
+  --theme-font-serif: 'Georgia', serif;
+  --theme-font-mono: 'Fira Code', monospace;
 }
 
 /* Dark theme */
 .theme-dark {
-  --theme-background: #1e1b29;
-  --theme-foreground: #f3f3f3;
-  --theme-primary: #c9a3ff;
-  --theme-secondary: #b3eaff;
-  --theme-accent: gold;
-  --theme-muted: #2b263b;
-  --theme-border: #3a3548;
+  --theme-background: #111827;
+  --theme-foreground: #f9fafb;
+  --theme-primary: #8b5cf6;
+  --theme-secondary: #1e3a8a;
+  --theme-accent: #facc15;
+  --theme-muted: #1f2937;
+  --theme-border: #374151;
+
   --theme-success: #34d399;
   --theme-warning: #fbbf24;
   --theme-error: #f87171;
 
-  --theme-font-sans: 'Segoe UI', sans-serif;
-  --theme-font-serif: sans-serif;
-  --theme-font-mono: 'Liberation Mono', monospace;
+  --theme-font-sans: 'Inter', 'Segoe UI', sans-serif;
+  --theme-font-serif: 'Georgia', serif;
+  --theme-font-mono: 'Fira Code', monospace;
 }
 
 @layer base {
